@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import Reveal from 'reveal.js';
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/black.css';
@@ -14,6 +14,19 @@ const Slider = () => {
   const deckRef = useRef(null);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizResults, setQuizResults] = useState({});
+
+  const totalQuizzes = useMemo(() =>
+    slides.filter(slide => slide.type === 'quiz').length,
+  [slides]);
+
+  const totalScore = useMemo(() =>
+    slides
+      .filter(slide => slide.type === 'quiz')
+      .reduce((score, slide) => {
+        const result = quizResults[slide.id];
+        return result?.isCorrect ? score + 1 : score;
+      }, 0),
+  [slides, quizResults]);
 
   useEffect(() => {
     if (deckRef.current) return;
@@ -67,6 +80,7 @@ const Slider = () => {
 
   const handleQuizSubmit = (slideId, selectedAnswer, correctAnswer) => {
     const isCorrect = selectedAnswer === correctAnswer;
+    
     setQuizResults(prev => ({
       ...prev,
       [slideId]: { selectedAnswer, correctAnswer, isCorrect }
@@ -110,13 +124,19 @@ const Slider = () => {
   };
 
   return (
-    <main className="slide-container">
+    <main className="slide-container relative">
+      {totalQuizzes > 0 && (
+        <div className="fixed top-1 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg z-50">
+          Score: {totalScore} / {totalQuizzes}
+        </div>
+      )}
+
       <div className="reveal" ref={deckDivRef}>
         <div className="slides">
           {slides.length > 0 ? (
             slides.map(slide => renderSlide(slide))
           ) : (
-            <NoSlide/>
+            <NoSlide />
           )}
         </div>
       </div>

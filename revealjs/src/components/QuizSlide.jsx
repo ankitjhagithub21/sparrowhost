@@ -1,3 +1,4 @@
+
 const QuizSlide = ({ slide, onAnswer, onSubmit, quizResults, quizAnswers }) => {
   const result = quizResults[slide.id];
   const selectedAnswer = quizAnswers[slide.id];
