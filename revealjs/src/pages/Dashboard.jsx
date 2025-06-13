@@ -10,10 +10,11 @@ const Dashboard = () => {
     <div>
      <div className="mt-20">
        <h2 className="text-3xl text-center">Create Slide</h2>
-      <div className="flex items-center gap-5  p-5">
-        <button onClick={()=>setType('quiz')} className="bg-gray-800 px-4 py-2 cursor-pointer text-white rounded-lg">Quiz Slide</button>
-        <button onClick={()=>setType('video')} className="bg-gray-800 px-4 py-2 cursor-pointer text-white rounded-lg">Video Slide</button>
-        <button onClick={()=>setType('image')} className="bg-gray-800 px-4 py-2 cursor-pointer text-white rounded-lg">Image comarision Slide</button>
+      <div className="flex items-center justify-center gap-5  p-5">
+        <button onClick={()=>setType('quiz')} className={` ${type==='quiz' ? 'bg-green-600':'bg-gray-800'} px-4 py-2 cursor-pointer text-white rounded-lg`}>Quiz Slide</button>
+        <button onClick={()=>setType('video')} className={` ${type==='video' ? 'bg-green-600':'bg-gray-800'} px-4 py-2 cursor-pointer text-white rounded-lg`}>Video Slide</button>
+
+        <button onClick={()=>setType('image')} className={` ${type==='image' ? 'bg-green-600':'bg-gray-800'} px-4 py-2 cursor-pointer text-white rounded-lg`}>Image comarision Slide</button>
       </div>
      </div>
       <section>
