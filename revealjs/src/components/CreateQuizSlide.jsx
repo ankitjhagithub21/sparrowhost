@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { addSlide } from "../app/slices/appSlice"
 
 const CreateQuizSlide = () => {
+  
   const initialState = {
     'question': '',
     'options': ['', '', '', ''],
