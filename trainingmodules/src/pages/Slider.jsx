@@ -6,6 +6,7 @@ import QuizSlide from "../components/slides/QuizSlide";
 import VideoSlide from "../components/slides/VideoSlide";
 import { useParams } from "react-router-dom";
 import ImageSlide from "../components/slides/ImageSlide";
+import PptSlide from "../components/slides/PptSlide";
 
 const NoSlide = () => (
   <section>
@@ -85,6 +86,12 @@ const Slider = () => {
         return (
           
             <ImageSlide slide={slide} />
+         
+        );
+         case "ppt":
+        return (
+          
+            <PptSlide slide={slide} />
          
         );
       default:

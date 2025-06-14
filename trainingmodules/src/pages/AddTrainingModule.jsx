@@ -4,6 +4,7 @@ import VideoSlide from '../components/VideoSlide';
 import { useDispatch } from 'react-redux';
 import { addTraingingModule } from '../app/appSlice';
 import ImageComparison from '../components/ImageComparison';
+import PptSlide from '../components/PptSlide';
 
 const AddTrainingModule = () => {
   const dispatch = useDispatch();
@@ -37,12 +38,14 @@ const AddTrainingModule = () => {
             videoUrl: '',
             description: '',
             title: '',
-          } : {
+          } : type === 'image' ? {
             realImageUrl: '',
             fakeImageUrl: '',
             title: '',
             description: ''
-          },
+          } : {
+            pptUrl: ''
+          }
     };
 
     setModuleData((prev) => ({
@@ -140,6 +143,13 @@ const AddTrainingModule = () => {
         >
           Add Image Comparison
         </button>
+          <button
+          type="button"
+          onClick={() => addSlide('ppt')}
+          className="bg-green-600 text-white text-sm px-4 py-1.5 rounded-lg hover:bg-green-700"
+        >
+          Add PPT
+        </button>
       </div>
 
       {/* Render Slides */}
@@ -161,9 +171,16 @@ const AddTrainingModule = () => {
             initialContent={slide.content}
             onChange={(content) => updateSlide(index, content)}
             onRemove={() => removeSlide(index)}
-          /> : <ImageComparison
+          /> : slide.type === 'image' ? <ImageComparison
             key={slide.id}
             type="image"
+            onChange={(content) => updateSlide(index, content)}
+            initialContent={slide.content}
+            onRemove={() => removeSlide(index)}
+            pageNumber={index + 1}
+          /> : <PptSlide
+            key={slide.id}
+            type="ppt"
             onChange={(content) => updateSlide(index, content)}
             initialContent={slide.content}
             onRemove={() => removeSlide(index)}
