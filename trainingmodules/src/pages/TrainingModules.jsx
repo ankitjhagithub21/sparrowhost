@@ -24,7 +24,7 @@ const TrainingModules = () => {
                 className='w-full h-40 object-cover rounded-md mb-3'
               />
          <div className='flex items-center justify-center'>
-             <Link to={`/training-module/${mod.moduleId}`} className='border border-gray-300 rounded-lg px-4 py-2'>View</Link>
+             <Link to={`/training-preview/${mod.moduleId}`} className='border border-gray-300 rounded-lg px-4 py-2'>View</Link>
          </div>
             </div>
           ))

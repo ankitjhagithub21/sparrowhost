@@ -8,3 +8,8 @@ button{
     cursor: pointer;
     outline: none;
 }
+
+.slide-container{
+    width: 100%;
+    height: 90vh;
+}

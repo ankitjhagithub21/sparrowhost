@@ -3,6 +3,7 @@ import QuestionSlide from '../components/QuestionSlide';
 import VideoSlide from '../components/VideoSlide';
 import { useDispatch } from 'react-redux';
 import { addTraingingModule } from '../app/appSlice';
+import ImageComparison from '../components/ImageComparison';
 
 const AddTrainingModule = () => {
   const dispatch = useDispatch();
@@ -27,16 +28,21 @@ const AddTrainingModule = () => {
       content:
         type === 'question'
           ? {
-              question: '',
-              options: ['', '', '', ''],
-              correctAnswer: 0,
-              answerDescription: '',
-            }
-          : {
-              videoUrl: '',
-              description: '',
-              title: '',
-            },
+            question: '',
+            options: ['', '', '', ''],
+            correctAnswer: 0,
+            answerDescription: '',
+          } :
+          type === 'video' ? {
+            videoUrl: '',
+            description: '',
+            title: '',
+          } : {
+            realImageUrl: '',
+            fakeImageUrl: '',
+            title: '',
+            description: ''
+          },
     };
 
     setModuleData((prev) => ({
@@ -60,7 +66,13 @@ const AddTrainingModule = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   dispatch(addTraingingModule(moduleData));
+    if (!moduleData.moduleName || !moduleData.coverImage || !moduleData.passingScore) {
+      return alert("Please fill the details for module data.")
+    }
+    if (moduleData.slides.length < 1) {
+      return alert("Please add atleast one training.")
+    }
+    dispatch(addTraingingModule(moduleData));
     // Submit to API here
     alert('Training module created successfully!');
   };
@@ -121,6 +133,13 @@ const AddTrainingModule = () => {
         >
           Add Video
         </button>
+        <button
+          type="button"
+          onClick={() => addSlide('image')}
+          className="bg-gray-800 text-white text-sm px-4 py-1.5 rounded-lg hover:bg-gray-900"
+        >
+          Add Image Comparison
+        </button>
       </div>
 
       {/* Render Slides */}
@@ -134,7 +153,7 @@ const AddTrainingModule = () => {
             onChange={(content) => updateSlide(index, content)}
             onRemove={() => removeSlide(index)}
           />
-        ) : (
+        ) : slide.type === 'video' ?
           <VideoSlide
             key={slide.id}
             type="video"
@@ -142,8 +161,15 @@ const AddTrainingModule = () => {
             initialContent={slide.content}
             onChange={(content) => updateSlide(index, content)}
             onRemove={() => removeSlide(index)}
+          /> : <ImageComparison
+            key={slide.id}
+            type="image"
+            onChange={(content) => updateSlide(index, content)}
+            initialContent={slide.content}
+            onRemove={() => removeSlide(index)}
+            pageNumber={index + 1}
           />
-        )
+
       )}
 
       <div className="flex items-center justify-end mt-3">
