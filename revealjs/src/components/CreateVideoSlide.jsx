@@ -8,6 +8,7 @@ const CreateVideoSlide = () => {
         videoUrl: '',
         description: ''
     }
+    
     const [content, setContent] = useState(initialData)
 
     const handleChange = (e) => {
