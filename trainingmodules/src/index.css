@@ -13,3 +13,9 @@ button{
     width: 100%;
     height: 90vh;
 }
+
+/* Add to your global CSS or tailwind.config.js */
+.reveal .slides section {
+  overflow: visible !important;
+  z-index: 1;
+}

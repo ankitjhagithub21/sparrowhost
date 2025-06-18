@@ -65,7 +65,7 @@ const Slider = () => {
   }, []);
 
   if (!module) {
-    return <p className="">Module not found.</p>;
+    return <p>Module not found.</p>;
   }
 
   const renderSlide = (slide) => {
@@ -73,26 +73,26 @@ const Slider = () => {
       case "video":
         return (
           
-            <VideoSlide slide={slide} />
+            <VideoSlide key={slide.id} slide={slide} />
           
         );
       case "question":
         return (
          
-            <QuizSlide slide={slide} />
+            <QuizSlide key={slide.id} slide={slide} />
          
         );
         case "image":
         return (
           
-            <ImageSlide slide={slide} />
+            <ImageSlide key={slide.id} slide={slide} />
          
         );
          case "ppt":
-        return (
-          
-            <PptSlide slide={slide} />
-         
+        return (       
+            <section key={slide.id}>
+              <PptSlide  slide={slide} />
+            </section>
         );
       default:
         return (
