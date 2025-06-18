@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import { useEffect, useRef } from "react";
 import Reveal from "reveal.js";
 import "reveal.js/dist/reveal.css";
@@ -6,21 +7,29 @@ import QuizSlide from "@/components/slides/QuizSlide";
 import VideoSlide from "@/components/slides/VideoSlide";
 import ImageSlide from "@/components/slides/ImageSlide";
 import PPTSlide from "@/components/slides/PPTSlide";
+import { useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
+import { RootState } from "@/lib/store";
 
 const NoSlide = () => (
   <section>
     <div className="slide-content">
-      <h2 className="text-2xl font-bold ">No Slides</h2>
+      <h2 className="text-2xl font-bold">No Slides</h2>
       <p className="text-gray-300">This module doesn't contain any slides.</p>
     </div>
   </section>
 );
 
 const Page = () => {
-  
-  
+  const searchParams = useSearchParams();
+  const moduleId = searchParams.get("id");
+
+  const module = useSelector((state: RootState) =>
+    state.module.modules.find((mod) => mod.id === moduleId)
+  );
+
   const deckDivRef = useRef(null);
-  const deckRef = useRef(null);
+  const deckRef = useRef<Reveal.Api | null>(null);
 
   useEffect(() => {
     if (!deckRef.current && deckDivRef.current) {
@@ -45,7 +54,7 @@ const Page = () => {
 
       deckRef.current.initialize().then(() => {
         console.log("Reveal.js initialized successfully");
-        deckRef.current.sync(); // Safe to sync after init
+        deckRef.current?.sync();
       });
     }
 
@@ -61,47 +70,47 @@ const Page = () => {
     };
   }, []);
 
-  if (!module) {
-    return <p>Module not found.</p>;
-  }
-
-  const renderSlide = (slide) => {
+  const renderSlide = (slide: any) => {
     switch (slide.type) {
+      case "quiz":
+        return (
+          <section key={slide.id}>
+            <QuizSlide slide={slide} />
+          </section>
+        );
       case "video":
         return (
-          
-            <VideoSlide key={slide.id} slide={slide} />
-          
+          <section key={slide.id}>
+            <VideoSlide slide={slide} />
+          </section>
         );
-      case "question":
+      case "image":
         return (
-         
-            <QuizSlide key={slide.id} slide={slide} />
-         
+          <section key={slide.id}>
+            <ImageSlide slide={slide} />
+          </section>
         );
-        case "image":
+      case "ppt":
         return (
-          
-            <ImageSlide key={slide.id} slide={slide} />
-         
-        );
-         case "ppt":
-        return (       
-            <section key={slide.id}>
-              <PPTSlide  slide={slide} />
-            </section>
+          <section key={slide.id}>
+            <PPTSlide slide={slide} />
+          </section>
         );
       default:
         return (
           <section key={slide.id}>
             <div className="slide-content">
-              <h2 className="text-2xl font-bold ">Unknown Slide Type</h2>
-              <p className="text-gray-300">Slide type "{slide.type}" not supported</p>
+              <h2 className="text-2xl font-bold">Unknown Slide Type</h2>
+              <p className="text-gray-300">Slide type "{slide.type}" not supported.</p>
             </div>
           </section>
         );
     }
   };
+
+  if (!module) {
+    return <p className="p-4 text-red-500">Module not found.</p>;
+  }
 
   return (
     <div className="slide-container">
@@ -116,4 +125,4 @@ const Page = () => {
   );
 };
 
-export default Page
+export default Page;

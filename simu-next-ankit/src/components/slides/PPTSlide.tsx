@@ -1,14 +1,18 @@
+import type { Slide } from "@/lib/features/modules/moduleSlice";
 
-const PptSlide = ({ slide }) => {
-  const pptUrl = slide?.content?.pptUrl;
+interface PptSlideProps {
+  slide: Extract<Slide, { type: "ppt" }>; 
+}
+
+const PptSlide: React.FC<PptSlideProps> = ({ slide }) => {
+  
 
   return (
     <div
-      className="relative z-10 w-full flex justify-center items-center overflow-auto"
-    >
+      className="relative w-full flex justify-center items-center overflow-auto">
       <iframe
-        src={pptUrl}
-        frameBorder="0"
+        src={slide.data.pptUrl}
+        
         width="960"
         height="569"
         allowFullScreen

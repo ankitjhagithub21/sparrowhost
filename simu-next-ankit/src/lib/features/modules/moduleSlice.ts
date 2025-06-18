@@ -1,13 +1,36 @@
-// store/moduleSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface Slide {
-  id: string;
-  type: 'quiz' | 'video' | 'image' | 'ppt';
-  data: object;
+export interface QuizData {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  answerDescription: string;
 }
 
-interface Module {
+export interface VideoData {
+  title: string;
+  description: string;
+  videoUrl: string;
+}
+
+export interface ImageData {
+  title: string;
+  fakeImageUrl: string;
+  realImageUrl: string;
+}
+
+export interface PPTData {
+  pptUrl: string;
+}
+
+export type Slide =
+  | { id: string; type: 'quiz'; data: QuizData }
+  | { id: string; type: 'video'; data: VideoData }
+  | { id: string; type: 'image'; data: ImageData }
+  | { id: string; type: 'ppt'; data: PPTData };
+  
+
+export interface Module {
   id: string;
   moduleName: string;
   passingScore: number;
@@ -55,15 +78,15 @@ const initialState: ModuleState = {
           type: 'image',
           data: {
             title: 'this is image comparison',
-            fakeImageUrl: 'this is a fake Image url',
-            realImageUrl: 'this is a real image Url',
+            fakeImageUrl: 'https://images.unsplash.com/photo-1750087328910-16dd862838eb?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            realImageUrl: 'https://images.unsplash.com/photo-1750086719448-b52e934c4ef8?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           },
         },
         {
           id: '104',
           type: 'ppt',
           data: {
-            pptUrl: "This is ppt url",
+            pptUrl: "https://docs.google.com/presentation/d/e/2PACX-1vTwQXX60pB7SkU2UzHmpGnorVLOn2d64FtP5yybj56TuOXxHr3q7zxbhjGhp3DDiolEZIQXrzV5ylgo/pubembed?start=false&loop=false&delayms=3000",
           },
         },
       ],
@@ -100,8 +123,8 @@ const initialState: ModuleState = {
           type: 'image',
           data: {
             title: 'this is image comparison',
-            fakeImageUrl: 'this is a fake Image url',
-            realImageUrl: 'this is a real image Url',
+            fakeImageUrl: 'https://images.unsplash.com/photo-1750099255888-91d5386e833c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            realImageUrl: 'https://images.unsplash.com/photo-1750099255888-91d5386e833c?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
           },
         },
         {
