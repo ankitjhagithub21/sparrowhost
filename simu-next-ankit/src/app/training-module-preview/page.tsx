@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useEffect, useRef } from "react";
 import Reveal from "reveal.js";
@@ -8,7 +8,7 @@ import VideoSlide from "@/components/slides/VideoSlide";
 import ImageSlide from "@/components/slides/ImageSlide";
 import PPTSlide from "@/components/slides/PPTSlide";
 import { useSelector } from "react-redux";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams } from 'next/navigation'
 import { RootState } from "@/lib/store";
 
 const NoSlide = () => (
@@ -21,11 +21,13 @@ const NoSlide = () => (
 );
 
 const Page = () => {
-  const searchParams = useSearchParams();
-  const moduleId = searchParams.get("id");
+ 
+  const searchParams = useSearchParams()
+ 
+  const moduleId = searchParams.get('id')
 
-  const module = useSelector((state: RootState) =>
-    state.module.modules.find((mod) => mod.id === moduleId)
+   const module = useSelector((state: RootState) =>
+    state.module.modules.find((mod) => mod.id == moduleId)
   );
 
   const deckDivRef = useRef(null);
