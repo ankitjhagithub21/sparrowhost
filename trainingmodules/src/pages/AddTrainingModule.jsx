@@ -17,6 +17,8 @@ const AddTrainingModule = () => {
     slides: [],
   });
 
+  
+
   const handleModuleChange = (e) => {
     const { name, value } = e.target;
     setModuleData({ ...moduleData, [name]: value });

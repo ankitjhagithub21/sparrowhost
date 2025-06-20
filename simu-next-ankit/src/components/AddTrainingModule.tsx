@@ -2,19 +2,269 @@
 
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addModule } from '@/lib/features/modules/moduleSlice';
+import { addModule, ImageData, PPTData, QuizData, SlideType, VideoData } from '@/lib/features/modules/moduleSlice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-
+import { X, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
 import AddQuizSlide from './slides/AddQuizSlide';
 import AddImageSlide from './slides/AddImageSlide';
 import AddVideoSlide from './slides/AddVideoSlide';
 import AddPptSlide from './slides/AddPptSlide';
 
 import { Slide, Module } from '@/lib/features/modules/moduleSlice';
+
+
+// Predefined data for select fields
+const coreBehaviors: string[] = [
+  "Social Engineering",
+  "Malware",
+  "Removable Media",
+  "Physical Security",
+  "Working Remotely",
+  "Mobile Security",
+  "Safe Web Browsing",
+];
+
+const contentTypes: string[] = [
+  "Assessment",
+  "Training Module",
+  "Live-Action Video",
+  "Publishing Assistant Module",
+  "Program Resource",
+  "Game",
+];
+
+const languages = [
+  { label: "Arabic", value: "ar" },
+  { label: "Hindi - HI", value: "HI" },
+  { label: "Urdu - UR", value: "UR" },
+  { label: "Swedish", value: "sv" },
+  { label: "Slovenian - SL", value: "sl" },
+  { label: "Romanian", value: "ro" },
+  { label: "Slovak", value: "sk" },
+  { label: "Spanish", value: "es" },
+  { label: "Lithuanian", value: "lt" },
+  { label: "Latvian", value: "lv" },
+  { label: "Portuguese", value: "pt" },
+  { label: "Italian", value: "it" },
+  { label: "Polish", value: "pl" },
+  { label: "Irish", value: "ga" },
+  { label: "Hungarian", value: "hu" },
+  { label: "French", value: "fr" },
+  { label: "German", value: "de" },
+  { label: "Greek", value: "el" },
+  { label: "Czech", value: "cs" },
+  { label: "Estonian", value: "et" },
+  { label: "Dutch", value: "nl" },
+  { label: "Finnish", value: "fi" },
+  { label: "Danish", value: "da" },
+  { label: "English", value: "en" },
+];
+
+const categories: string[] = [
+  "Administrative Modules",
+  "Advanced Cybersecurity and Risk Management",
+  "Compliance",
+  "GDPR",
+  "K-12",
+  "Malware & Phishing",
+  "Mobile Security",
+  "Network Security",
+  "Password Security",
+  "Personnel Security",
+  "Physical Security & Hardware",
+  "Privacy and Data Protection",
+  "Secure Application Development",
+  "Social Engineering",
+  "Web-Based Threats",
+];
+
+const roles: string[] = [
+  "Customer service",
+  "Developers",
+  "Executives",
+  "Finance",
+  "General",
+  "Human Resources",
+  "IT Staff",
+  "Managers",
+  "Privileged users",
+];
+
+const industries: string[] = [
+  "Critical Infrastructure",
+  "Education",
+  "Financial Services",
+  "Government",
+  "Healthcare",
+  "Manufacturing",
+  "Not for Profit",
+  "Other",
+  "Retail",
+  "Technology",
+];
+
+const durations: string[] = [
+  "Under 2 Minutes",
+  "2-5 Minutes",
+  "5-10 Minutes",
+  "Over 10 Minutes",
+];
+
+const tags: string[] = [
+  "Acceptable Use Policy",
+  "Access Control",
+  "Accessible",
+  "AI",
+  "Antivirus",
+  "API",
+  "App Permissions",
+  "APT",
+  "Attachments",
+  "Attack Prevention",
+  "Authentication",
+  "Backups",
+  "Bank Secrecy Act",
+  "Banking Trojans",
+  "Basic Information",
+  "Business Email Compromise",
+  "C-I-A Triad",
+  "C-TPAT",
+  "CCPA",
+  "CJI",
+  "Cloud Security",
+  "CMMC",
+  "COPPA",
+  "Core Concepts",
+  "CPNI",
+  "Cross-Site Scripting",
+  "CSAM",
+  "CSRF",
+  "Cybersecurity",
+  "Cybersecurity Awareness Month",
+  "Data Destruction",
+  "Data Disclosure",
+  "Data Disposal",
+  "Data Protection",
+  "Data Storage",
+  "Deserialization",
+  "Device Theft",
+  "DFARS",
+  "EAL",
+  "Educator",
+  "Email",
+  "Encryption",
+  "Error Handling",
+  "FAR Code of Conduct",
+  "FCPA",
+  "FERPA",
+  "FINRA",
+  "Firewall",
+  "Fraud Prevention",
+  "FTI",
+  "GDPR",
+  "GLBA",
+  "Hacked for the Holidays",
+  "Hacker Headlines",
+  "HIPAA",
+  "HITECH",
+  "Host Name",
+  "HTTPS",
+  "Identity Theft",
+  "Incident Response",
+  "Infringement Risks",
+  "Injection Flaws",
+  "Insider Threat",
+  "Intellectual Property",
+  "Interactive",
+  "Introduction",
+  "IoT Security",
+  "Just the Facts",
+  "K-12",
+  "Legislation",
+  "License agreement",
+  "Links",
+  "Live Action",
+  "Logging and Monitoring",
+  "Malware",
+  "Manager",
+  "Marine Lowlifes",
+  "Medical Devices",
+  "Microlearning",
+  "Misconfiguration",
+  "Mobile Security",
+  "Money Laundering",
+  "Multi-Factor Authentication",
+  "Need to Know: Season 1",
+  "Need to Know: Season 2",
+  "Network Security",
+  "NIST",
+  "Organizational Policy",
+  "OWASP",
+  "Password Security",
+  "PCI",
+  "Permissions",
+  "Personal Data",
+  "PHI",
+  "Phishing",
+  "Physical Security",
+  "Pick Your Path",
+  "PII",
+  "Pretexting",
+  "Privacy",
+  "Proper Disposal",
+  "Public Networks",
+  "Ransomware",
+  "Red Flags Rule",
+  "Regulation",
+  "Remote Access",
+  "Removable Media",
+  "Report Attacks",
+  "Role-Based Training",
+  "Safe Browsing",
+  "Safe Data Handling",
+  "Sarbanes-Oxley Act",
+  "Secure Coding",
+  "Secure Connection",
+  "Security Champions",
+  "Security Policy",
+  "Session Management",
+  "Smart Devices",
+  "SMS Phishing",
+  "Social Engineering",
+  "Social Media",
+  "Spam",
+  "Spearphishing",
+  "Spoofed domains",
+  "SSID",
+  "Tailgating",
+  "Travel Security",
+  "Updates and Patches",
+  "Vishing",
+  "Whaling",
+  "Wi-Fi",
+  "Work Bytes",
+  "WORKed",
+  "Working Remotely",
+  "XXE",
+];
+
+const programResources: string[] = [
+  "Emails",
+  "Infographics",
+  "Newsletters",
+  "Posters",
+  "Program plans and kits",
+];
+
+const securityLevels: string[] = [
+  "Low",
+  "Medium",
+  "High",
+  "Critical"
+];
 
 interface AddTrainingModuleProps {
   onClose: () => void;
@@ -23,6 +273,7 @@ interface AddTrainingModuleProps {
 const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
   const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(1);
+
   const [moduleData, setModuleData] = useState<Omit<Module, 'id'>>({
     moduleName: '',
     language: '',
@@ -44,8 +295,8 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newValue =
-      name === 'passingScore' || name === 'duration' || name === 'completionTime' 
-        ? parseInt(value, 10) || 0 
+      name === 'passingScore' || name === 'duration' || name === 'completionTime'
+        ? parseInt(value, 10) || 0
         : value;
     setModuleData({ ...moduleData, [name]: newValue });
   };
@@ -54,34 +305,49 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
     setModuleData({ ...moduleData, [name]: value });
   };
 
-  const addSlide = (type: Slide['type']) => {
-    const newSlide: Slide = {
-      id: Date.now().toString(),
-      type,
-      data:
-        type === 'quiz'
-          ? {
-              question: '',
-              options: ['', '', '', ''],
-              correctAnswer: 0,
-              answerDescription: '',
-            }
-          : type === 'video'
-          ? {
-              videoUrl: '',
-              title: '',
-              description: '',
-            }
-          : type === 'image'
-          ? {
-              title: '',
-              fakeImageUrl: '',
-              realImageUrl: '',
-            }
-          : {
-              pptUrl: '',
-            },
-    };
+  const addSlide = (type: SlideType) => {
+    let newSlide: Slide;
+
+    if (type === 'quiz') {
+      newSlide = {
+        id: Date.now().toString(),
+        type,
+        data: {
+          question: '',
+          options: ['', '', '', ''],
+          correctAnswer: 0,
+          answerDescription: '',
+        },
+      };
+    } else if (type === 'video') {
+      newSlide = {
+        id: Date.now().toString(),
+        type,
+        data: {
+          videoUrl: '',
+          title: '',
+          description: '',
+        },
+      };
+    } else if (type === 'image') {
+      newSlide = {
+        id: Date.now().toString(),
+        type,
+        data: {
+          title: '',
+          fakeImageUrl: '',
+          realImageUrl: '',
+        },
+      };
+    } else {
+      newSlide = {
+        id: Date.now().toString(),
+        type,
+        data: {
+          pptUrl: '',
+        },
+      };
+    }
 
     setModuleData((prev) => ({
       ...prev,
@@ -91,8 +357,35 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
 
   const updateSlide = (index: number, data: Slide['data']) => {
     const updated = [...moduleData.slides];
-    updated[index] = { ...updated[index], data };
-    setModuleData({ ...moduleData, slides: updated });
+    const currentSlide = updated[index];
+
+    function isQuizData(data: Slide['data']): data is QuizData {
+      return typeof (data as QuizData).question === 'string';
+    }
+
+    function isVideoData(data: Slide['data']): data is VideoData {
+      return typeof (data as VideoData).videoUrl === 'string';
+    }
+
+    function isImageData(data: Slide['data']): data is ImageData {
+      return typeof (data as ImageData).fakeImageUrl === 'string';
+    }
+
+    function isPPTData(data: Slide['data']): data is PPTData {
+      return typeof (data as PPTData).pptUrl === 'string';
+    }
+
+    if (
+      (currentSlide.type === 'quiz' && isQuizData(data)) ||
+      (currentSlide.type === 'video' && isVideoData(data)) ||
+      (currentSlide.type === 'image' && isImageData(data)) ||
+      (currentSlide.type === 'ppt' && isPPTData(data))
+    ) {
+      updated[index] = { ...currentSlide, data } as Slide;
+      setModuleData({ ...moduleData, slides: updated });
+    } else {
+      console.error('Data type does not match slide type');
+    }
   };
 
   const removeSlide = (index: number) => {
@@ -124,38 +417,20 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
     onClose();
   };
 
-  const validateStepOne = () => {
-    const { 
-      moduleName, 
-      category, 
-      passingScore, 
-      image, 
-      security, 
-      industry, 
-      role, 
-      coreBehavior, 
-      programResource,
-      language,
-      contentType,
-      tag
-    } = moduleData;
-    
-   
-    return true;
-  };
-
   const handleNextStep = () => {
-    if (validateStepOne()) {
-      setCurrentStep(2);
-    }
+    setCurrentStep(2)
   };
 
   const handlePrevStep = () => {
     setCurrentStep(1);
   };
 
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+
+
+
       <div className="bg-white w-full h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gray-50">
@@ -164,19 +439,16 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
               Create New Training Module
             </h1>
             <div className="flex items-center space-x-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+                }`}>
                 1
               </div>
               <div className="w-8 h-1 bg-gray-200">
-                <div className={`h-full bg-blue-600 transition-all duration-300 ${
-                  currentStep >= 2 ? 'w-full' : 'w-0'
-                }`}></div>
+                <div className={`h-full bg-blue-600 transition-all duration-300 ${currentStep >= 2 ? 'w-full' : 'w-0'
+                  }`}></div>
               </div>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'
+                }`}>
                 2
               </div>
             </div>
@@ -230,11 +502,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                         value={moduleData.moduleName}
                         onChange={handleChange}
                         placeholder="Enter module name"
-                        className="w-full h-12 text-base"
+                        className="w-full h-10 text-base"
                         required
                       />
                     </div>
-                    
+
                     <div className="space-y-3">
                       <Label htmlFor="language" className="text-base font-medium text-gray-700">
                         Language *
@@ -244,13 +516,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Language" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="english">English</SelectItem>
-                          <SelectItem value="spanish">Spanish</SelectItem>
-                          <SelectItem value="french">French</SelectItem>
-                          <SelectItem value="german">German</SelectItem>
-                          <SelectItem value="chinese">Chinese</SelectItem>
-                          <SelectItem value="japanese">Japanese</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          {languages.map((lang) => (
+                            <SelectItem key={lang.value} value={lang.value}>
+                              {lang.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -264,12 +534,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="cybersecurity">Cybersecurity</SelectItem>
-                          <SelectItem value="compliance">Compliance</SelectItem>
-                          <SelectItem value="data-protection">Data Protection</SelectItem>
-                          <SelectItem value="phishing">Phishing</SelectItem>
-                          <SelectItem value="malware">Malware</SelectItem>
-                          <SelectItem value="social-engineering">Social Engineering</SelectItem>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -283,13 +552,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Content Type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="video">Video</SelectItem>
-                          <SelectItem value="quiz">Quiz</SelectItem>
-                          <SelectItem value="article">Article</SelectItem>
-                          <SelectItem value="interactive">Interactive</SelectItem>
-                          <SelectItem value="simulation">Simulation</SelectItem>
-                          <SelectItem value="assessment">Assessment</SelectItem>
-                          <SelectItem value="mixed">Mixed Content</SelectItem>
+                          {contentTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -303,13 +570,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Tag" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="beginner">Beginner</SelectItem>
-                          <SelectItem value="intermediate">Intermediate</SelectItem>
-                          <SelectItem value="advanced">Advanced</SelectItem>
-                          <SelectItem value="mandatory">Mandatory</SelectItem>
-                          <SelectItem value="optional">Optional</SelectItem>
-                          <SelectItem value="new-employee">New Employee</SelectItem>
-                          <SelectItem value="annual-training">Annual Training</SelectItem>
+                          {tags.map((tag) => (
+                            <SelectItem key={tag} value={tag}>
+                              {tag}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -323,10 +588,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Security Level" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="low">Low</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="high">High</SelectItem>
-                          <SelectItem value="critical">Critical</SelectItem>
+                          {securityLevels.map((level) => (
+                            <SelectItem key={level} value={level}>
+                              {level}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -343,7 +609,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                         onChange={handleChange}
                         placeholder="0"
                         min={0}
-                        className="w-full h-12 text-base"
+                        className="w-full h-10 text-base"
                       />
                     </div>
                   </div>
@@ -359,14 +625,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Industry" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="finance">Finance</SelectItem>
-                          <SelectItem value="healthcare">Healthcare</SelectItem>
-                          <SelectItem value="technology">Technology</SelectItem>
-                          <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                          <SelectItem value="retail">Retail</SelectItem>
-                          <SelectItem value="education">Education</SelectItem>
-                          <SelectItem value="government">Government</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
+                          {industries.map((industry) => (
+                            <SelectItem key={industry} value={industry}>
+                              {industry}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -380,14 +643,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Role" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all-employees">All Employees</SelectItem>
-                          <SelectItem value="management">Management</SelectItem>
-                          <SelectItem value="it-staff">IT Staff</SelectItem>
-                          <SelectItem value="hr">HR</SelectItem>
-                          <SelectItem value="finance">Finance</SelectItem>
-                          <SelectItem value="sales">Sales</SelectItem>
-                          <SelectItem value="customer-service">Customer Service</SelectItem>
-                          <SelectItem value="executives">Executives</SelectItem>
+                          {roles.map((role) => (
+                            <SelectItem key={role} value={role}>
+                              {role}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -401,12 +661,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Core Behavior" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="awareness">Security Awareness</SelectItem>
-                          <SelectItem value="prevention">Threat Prevention</SelectItem>
-                          <SelectItem value="response">Incident Response</SelectItem>
-                          <SelectItem value="compliance">Compliance Adherence</SelectItem>
-                          <SelectItem value="reporting">Threat Reporting</SelectItem>
-                          <SelectItem value="best-practices">Best Practices</SelectItem>
+                          {coreBehaviors.map((behavior) => (
+                            <SelectItem key={behavior} value={behavior}>
+                              {behavior}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -420,12 +679,11 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                           <SelectValue placeholder="Select Program Resource" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="onboarding">New Employee Onboarding</SelectItem>
-                          <SelectItem value="annual">Annual Security Training</SelectItem>
-                          <SelectItem value="refresher">Refresher Course</SelectItem>
-                          <SelectItem value="specialized">Specialized Training</SelectItem>
-                          <SelectItem value="compliance">Compliance Training</SelectItem>
-                          <SelectItem value="certification">Certification Prep</SelectItem>
+                          {programResources.map((resource) => (
+                            <SelectItem key={resource} value={resource}>
+                              {resource}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -442,7 +700,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                         onChange={handleChange}
                         placeholder="0"
                         min={0}
-                        className="w-full h-12 text-base"
+                        className="w-full h-10 text-base"
                       />
                     </div>
 
@@ -459,7 +717,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                         placeholder="Enter passing score"
                         min={0}
                         max={100}
-                        className="w-full h-12 text-base"
+                        className="w-full h-10 text-base"
                         required
                       />
                     </div>
@@ -475,7 +733,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                         value={moduleData.image}
                         onChange={handleChange}
                         placeholder="https://example.com/image.jpg"
-                        className="w-full h-12 text-base"
+                        className="w-full h-10 text-base"
                         required
                       />
                     </div>
@@ -501,30 +759,30 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                   Add Content
                 </h3>
                 <div className="flex flex-wrap gap-3">
-                  <Button 
-                    type="button" 
-                    onClick={() => addSlide('quiz')} 
+                  <Button
+                    type="button"
+                    onClick={() => addSlide('quiz')}
                     className="bg-purple-600 hover:bg-purple-700"
                   >
                     + Add Quiz
                   </Button>
-                  <Button 
-                    type="button" 
-                    onClick={() => addSlide('video')} 
+                  <Button
+                    type="button"
+                    onClick={() => addSlide('video')}
                     className="bg-red-600 hover:bg-red-700"
                   >
                     + Add Video
                   </Button>
-                  <Button 
-                    type="button" 
-                    onClick={() => addSlide('image')} 
+                  <Button
+                    type="button"
+                    onClick={() => addSlide('image')}
                     className="bg-green-600 hover:bg-green-700"
                   >
                     + Add Image
                   </Button>
-                  <Button 
-                    type="button" 
-                    onClick={() => addSlide('ppt')} 
+                  <Button
+                    type="button"
+                    onClick={() => addSlide('ppt')}
                     className="bg-blue-600 hover:bg-blue-700"
                   >
                     + Add PPT
@@ -541,41 +799,84 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                   </div>
                 ) : (
                   moduleData.slides.map((slide, index) => {
-                    const commonProps = {
-                      key: slide.id,
-                      initialData: slide.data,
-                      onChange: (data: Slide['data']) => updateSlide(index, data),
-                      onRemove: () => removeSlide(index),
-                      index: index + 1,
-                    };
-                    
                     return (
-                      <div key={slide.id} className="border rounded-lg bg-white shadow-sm">
-                        <div className="p-4 bg-gray-50 border-b">
-                          <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-gray-900">
-                              Slide {index + 1} - {slide.type.charAt(0).toUpperCase() + slide.type.slice(1)}
-                            </h4>
-                            <div className={`px-2 py-1 rounded text-xs font-medium ${
-                              slide.type === 'quiz' ? 'bg-purple-100 text-purple-800' :
-                              slide.type === 'video' ? 'bg-red-100 text-red-800' :
-                              slide.type === 'image' ? 'bg-green-100 text-green-800' :
-                              'bg-blue-100 text-blue-800'
-                            }`}>
-                              {slide.type.toUpperCase()}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          {(() => {
-                            switch (slide.type) {
-                              case 'quiz': return <AddQuizSlide {...commonProps} />;
-                              case 'video': return <AddVideoSlide {...commonProps} />;
-                              case 'image': return <AddImageSlide {...commonProps} />;
-                              case 'ppt': return <AddPptSlide {...commonProps} />;
-                              default: return null;
-                            }
-                          })()}
+                      <div key={slide.id} className="border p-4 rounded-lg bg-white shadow-sm">
+
+                        {(() => {
+                          switch (slide.type) {
+                            case 'quiz':
+                              return (
+                                <AddQuizSlide
+                                  initialData={slide.data}
+                                  onChange={(data) => updateSlide(index, data)}
+                                  onRemove={() => removeSlide(index)}
+                                  index={index}
+                                />
+                              );
+                            case 'video':
+                              return (
+                                <AddVideoSlide
+                                  initialData={slide.data}
+                                  onChange={(data) => updateSlide(index, data)}
+                                  onRemove={() => removeSlide(index)}
+                                  index={index}
+                                  
+                                />
+                              );
+                            case 'image':
+                              return (
+                                <AddImageSlide
+                                  initialData={slide.data}
+                                  onChange={(data) => updateSlide(index, data)}
+                                  onRemove={() => removeSlide(index)}
+                                  index={index}
+                                  
+                                />
+                              );
+                            case 'ppt':
+                              return (
+                                <AddPptSlide
+                                  initialData={slide.data}
+                                  onChange={(data) => updateSlide(index, data)}
+                                  onRemove={() => removeSlide(index)}
+                                  index={index}
+                                 
+                                />
+                              );
+                            default:
+                              return null;
+                          }
+                        })()}
+
+                        <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200 mt-4">
+                          <Button
+                            type="button"
+                            onClick={() => addSlide('quiz')}
+                            className="bg-purple-600 hover:bg-purple-700"
+                          >
+                            + Add Quiz
+                          </Button>
+                          <Button
+                            type="button"
+                            onClick={() => addSlide('video')}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            + Add Video
+                          </Button>
+                          <Button
+                            type="button"
+                            onClick={() => addSlide('image')}
+                            className="bg-green-600 hover:bg-green-700"
+                          >
+                            + Add Image
+                          </Button>
+                          <Button
+                            type="button"
+                            onClick={() => addSlide('ppt')}
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
+                            + Add PPT
+                          </Button>
                         </div>
                       </div>
                     );
@@ -596,7 +897,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                 `${moduleData.slides.length} slide${moduleData.slides.length !== 1 ? 's' : ''} added`
               )}
             </div>
-            
+
             <div className="flex items-center space-x-3">
               {currentStep === 2 && (
                 <Button
@@ -608,7 +909,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                   <span>Back</span>
                 </Button>
               )}
-              
+
               {currentStep === 1 ? (
                 <Button
                   onClick={handleNextStep}

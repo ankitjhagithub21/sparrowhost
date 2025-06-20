@@ -7,6 +7,8 @@ export interface QuizData {
   answerDescription: string;
 }
 
+export type SlideType = 'quiz' | 'video' | 'image' | 'ppt';
+
 export interface VideoData {
   title: string;
   description: string;

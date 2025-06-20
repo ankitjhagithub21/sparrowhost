@@ -11,7 +11,7 @@ import { RootState } from "@/lib/store";
 const TrainingPage = () => {
   const [showModal, setShowModal] = useState(false);
   const { modules } = useSelector((state: RootState) => state.module);
-  
+ 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
@@ -29,7 +29,7 @@ const TrainingPage = () => {
         </Button>
       </div>
 
-      
+
 
       {/* Modules Grid */}
       {modules.length === 0 ? (
@@ -79,14 +79,14 @@ const TrainingPage = () => {
                     {module.moduleName}
                   </h3>
                 </div>
-             
 
-               
+
+
 
                 <Link href={`/training-module-preview?id=${module.id}`} target="_blank">
                   <Button>
                     <Eye />
-                   
+
                   </Button>
                 </Link>
               </div>
