@@ -45,9 +45,6 @@ const FileUploadModal: React.FC<Props> = ({ onSelect, onClose, fileTypeFilter })
     if (type.includes('pdf')) return '📄';
     if (type.includes('image')) return '🖼️';
     if (type.includes('video')) return '🎥';
-    if (type.includes('audio')) return '🎵';
-    if (type.includes('text') || type.includes('word')) return '📝';
-    if (type.includes('spreadsheet') || type.includes('excel')) return '📊';
     if (type.includes('presentation') || type.includes('powerpoint')) return '📋';
     return '📁';
   };

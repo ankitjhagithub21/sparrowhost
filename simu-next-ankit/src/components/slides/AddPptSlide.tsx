@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { PPTData, SlideType } from '@/lib/features/modules/moduleSlice';
+import { PPTData} from '@/lib/features/modules/moduleSlice';
 import { useFileUploadModal } from "@/contexts/FileUploadModalContext";
 
 interface AddPptSlideProps {
@@ -17,12 +15,6 @@ const AddPptSlide = ({ initialData, onChange, onRemove, index}: AddPptSlideProps
   const [data, setData] = useState<PPTData>(initialData);
   const { openModal } = useFileUploadModal();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const updatedData = { ...data, [name]: value };
-    setData(updatedData);
-    onChange(updatedData);
-  };
 
   const handlePptSelect = () => {
     openModal((file) => {

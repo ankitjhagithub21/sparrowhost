@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { ImageData, SlideType } from '@/lib/features/modules/moduleSlice';
+import { ImageData} from '@/lib/features/modules/moduleSlice';
 import { useFileUploadModal } from "@/contexts/FileUploadModalContext";
 
 

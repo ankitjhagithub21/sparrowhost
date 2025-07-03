@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { SlideType, VideoData } from '@/lib/features/modules/moduleSlice';
+import { VideoData } from '@/lib/features/modules/moduleSlice';
 import { useFileUploadModal } from "@/contexts/FileUploadModalContext";
 
 interface AddVideoSlideProps {

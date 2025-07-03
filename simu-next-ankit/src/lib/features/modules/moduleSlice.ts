@@ -44,13 +44,12 @@ export interface Module {
   contentType:string;
   passingScore: number;
   category: string;
-  image: string;
-  duration: number;
+  coverImage: string;
+  duration: string;
   industry:string;
   security:string;
   slides: Slide[];
-  
-  
+   
 }
 
 interface ModuleState {
@@ -72,8 +71,8 @@ const initialState: ModuleState = {
       programResource: 'infographics',
       category: 'international',
       tag: 'accessible',
-      image: 'https://images.unsplash.com/photo-1743930285895-ce090ae2a115?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxNnx8fGVufDB8fHx8fA%3D%3D',
-      duration: 10000,
+      coverImage: 'https://images.unsplash.com/photo-1743930285895-ce090ae2a115?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxNnx8fGVufDB8fHx8fA%3D%3D',
+      duration: '5-10 minute',
       security: 'high', 
       slides: [
         {

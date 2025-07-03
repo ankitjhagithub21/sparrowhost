@@ -3,17 +3,42 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, Plus } from "lucide-react";
+import { Eye, Plus, Trash } from "lucide-react";
 import AddTrainingModule from "@/components/AddTrainingModule";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import { removeModule } from "@/lib/features/modules/moduleSlice"
+import Swal from 'sweetalert2'
 
 const TrainingPage = () => {
   const [showModal, setShowModal] = useState(false);
   const { modules } = useSelector((state: RootState) => state.module);
- 
+  const dispatch = useDispatch()
+
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
+
+  const handleRemoveModule = (moduleId: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(removeModule(moduleId))
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+
+  }
 
   return (
     <div className="p-6">
@@ -42,7 +67,7 @@ const TrainingPage = () => {
             <p className="text-gray-500 mb-6">
               Get started by creating your first training module with interactive content.
             </p>
-            <Button onClick={openModal} className="flex items-center space-x-2">
+            <Button onClick={openModal} className="flex items-center mx-auto space-x-2">
               <Plus className="w-5 h-5" />
               <span>Create Your First Module</span>
             </Button>
@@ -58,18 +83,14 @@ const TrainingPage = () => {
               {/* Module Image */}
               <div className="relative h-48 bg-gray-100">
                 <img
-                  src={module.image}
+                  src={module.coverImage}
                   alt={module.moduleName}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDMwMCAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTkyIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5Q0EzQUYiIGZvbnQtc2l6ZT0iMTQiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4K';
                   }}
                 />
-                <div className="absolute top-3 right-3">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {module.slides.length} slide{module.slides.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
+                
               </div>
 
               {/* Module Content */}
@@ -83,12 +104,19 @@ const TrainingPage = () => {
 
 
 
-                <Link href={`/training-module-preview?id=${module.id}`} target="_blank">
-                  <Button>
-                    <Eye />
+                <div className="flex items-center gap-3">
+                  <Link href={`/training-module-preview?id=${module.id}`} target="_blank">
+                    <Button>
+                      <Eye />
+
+                    </Button>
+                  </Link>
+                  <Button variant={"destructive"} onClick={() => handleRemoveModule(module.id)}>
+                    <Trash />
 
                   </Button>
-                </Link>
+                </div>
+
               </div>
             </div>
           ))}

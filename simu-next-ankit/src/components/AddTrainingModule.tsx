@@ -7,264 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, ChevronLeft, ChevronRight, Upload } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import AddQuizSlide from './slides/AddQuizSlide';
 import AddImageSlide from './slides/AddImageSlide';
 import AddVideoSlide from './slides/AddVideoSlide';
 import AddPptSlide from './slides/AddPptSlide';
-
+import { useFileUploadModal } from "@/contexts/FileUploadModalContext";
 import { Slide, Module } from '@/lib/features/modules/moduleSlice';
+import { categories, contentTypes, coreBehaviors, languages, programResources, roles, industries, durations, tags, securityLevels } from '@/selectfielddata';
 
-
-// Predefined data for select fields
-const coreBehaviors: string[] = [
-  "Social Engineering",
-  "Malware",
-  "Removable Media",
-  "Physical Security",
-  "Working Remotely",
-  "Mobile Security",
-  "Safe Web Browsing",
-];
-
-const contentTypes: string[] = [
-  "Assessment",
-  "Training Module",
-  "Live-Action Video",
-  "Publishing Assistant Module",
-  "Program Resource",
-  "Game",
-];
-
-const languages = [
-  { label: "Arabic", value: "ar" },
-  { label: "Hindi - HI", value: "HI" },
-  { label: "Urdu - UR", value: "UR" },
-  { label: "Swedish", value: "sv" },
-  { label: "Slovenian - SL", value: "sl" },
-  { label: "Romanian", value: "ro" },
-  { label: "Slovak", value: "sk" },
-  { label: "Spanish", value: "es" },
-  { label: "Lithuanian", value: "lt" },
-  { label: "Latvian", value: "lv" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Italian", value: "it" },
-  { label: "Polish", value: "pl" },
-  { label: "Irish", value: "ga" },
-  { label: "Hungarian", value: "hu" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Greek", value: "el" },
-  { label: "Czech", value: "cs" },
-  { label: "Estonian", value: "et" },
-  { label: "Dutch", value: "nl" },
-  { label: "Finnish", value: "fi" },
-  { label: "Danish", value: "da" },
-  { label: "English", value: "en" },
-];
-
-const categories: string[] = [
-  "Administrative Modules",
-  "Advanced Cybersecurity and Risk Management",
-  "Compliance",
-  "GDPR",
-  "K-12",
-  "Malware & Phishing",
-  "Mobile Security",
-  "Network Security",
-  "Password Security",
-  "Personnel Security",
-  "Physical Security & Hardware",
-  "Privacy and Data Protection",
-  "Secure Application Development",
-  "Social Engineering",
-  "Web-Based Threats",
-];
-
-const roles: string[] = [
-  "Customer service",
-  "Developers",
-  "Executives",
-  "Finance",
-  "General",
-  "Human Resources",
-  "IT Staff",
-  "Managers",
-  "Privileged users",
-];
-
-const industries: string[] = [
-  "Critical Infrastructure",
-  "Education",
-  "Financial Services",
-  "Government",
-  "Healthcare",
-  "Manufacturing",
-  "Not for Profit",
-  "Other",
-  "Retail",
-  "Technology",
-];
-
-const durations: string[] = [
-  "Under 2 Minutes",
-  "2-5 Minutes",
-  "5-10 Minutes",
-  "Over 10 Minutes",
-];
-
-const tags: string[] = [
-  "Acceptable Use Policy",
-  "Access Control",
-  "Accessible",
-  "AI",
-  "Antivirus",
-  "API",
-  "App Permissions",
-  "APT",
-  "Attachments",
-  "Attack Prevention",
-  "Authentication",
-  "Backups",
-  "Bank Secrecy Act",
-  "Banking Trojans",
-  "Basic Information",
-  "Business Email Compromise",
-  "C-I-A Triad",
-  "C-TPAT",
-  "CCPA",
-  "CJI",
-  "Cloud Security",
-  "CMMC",
-  "COPPA",
-  "Core Concepts",
-  "CPNI",
-  "Cross-Site Scripting",
-  "CSAM",
-  "CSRF",
-  "Cybersecurity",
-  "Cybersecurity Awareness Month",
-  "Data Destruction",
-  "Data Disclosure",
-  "Data Disposal",
-  "Data Protection",
-  "Data Storage",
-  "Deserialization",
-  "Device Theft",
-  "DFARS",
-  "EAL",
-  "Educator",
-  "Email",
-  "Encryption",
-  "Error Handling",
-  "FAR Code of Conduct",
-  "FCPA",
-  "FERPA",
-  "FINRA",
-  "Firewall",
-  "Fraud Prevention",
-  "FTI",
-  "GDPR",
-  "GLBA",
-  "Hacked for the Holidays",
-  "Hacker Headlines",
-  "HIPAA",
-  "HITECH",
-  "Host Name",
-  "HTTPS",
-  "Identity Theft",
-  "Incident Response",
-  "Infringement Risks",
-  "Injection Flaws",
-  "Insider Threat",
-  "Intellectual Property",
-  "Interactive",
-  "Introduction",
-  "IoT Security",
-  "Just the Facts",
-  "K-12",
-  "Legislation",
-  "License agreement",
-  "Links",
-  "Live Action",
-  "Logging and Monitoring",
-  "Malware",
-  "Manager",
-  "Marine Lowlifes",
-  "Medical Devices",
-  "Microlearning",
-  "Misconfiguration",
-  "Mobile Security",
-  "Money Laundering",
-  "Multi-Factor Authentication",
-  "Need to Know: Season 1",
-  "Need to Know: Season 2",
-  "Network Security",
-  "NIST",
-  "Organizational Policy",
-  "OWASP",
-  "Password Security",
-  "PCI",
-  "Permissions",
-  "Personal Data",
-  "PHI",
-  "Phishing",
-  "Physical Security",
-  "Pick Your Path",
-  "PII",
-  "Pretexting",
-  "Privacy",
-  "Proper Disposal",
-  "Public Networks",
-  "Ransomware",
-  "Red Flags Rule",
-  "Regulation",
-  "Remote Access",
-  "Removable Media",
-  "Report Attacks",
-  "Role-Based Training",
-  "Safe Browsing",
-  "Safe Data Handling",
-  "Sarbanes-Oxley Act",
-  "Secure Coding",
-  "Secure Connection",
-  "Security Champions",
-  "Security Policy",
-  "Session Management",
-  "Smart Devices",
-  "SMS Phishing",
-  "Social Engineering",
-  "Social Media",
-  "Spam",
-  "Spearphishing",
-  "Spoofed domains",
-  "SSID",
-  "Tailgating",
-  "Travel Security",
-  "Updates and Patches",
-  "Vishing",
-  "Whaling",
-  "Wi-Fi",
-  "Work Bytes",
-  "WORKed",
-  "Working Remotely",
-  "XXE",
-];
-
-const programResources: string[] = [
-  "Emails",
-  "Infographics",
-  "Newsletters",
-  "Posters",
-  "Program plans and kits",
-];
-
-const securityLevels: string[] = [
-  "Low",
-  "Medium",
-  "High",
-  "Critical"
-];
 
 interface AddTrainingModuleProps {
   onClose: () => void;
@@ -273,29 +24,30 @@ interface AddTrainingModuleProps {
 const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
   const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(1);
+  const { openModal } = useFileUploadModal();
 
   const [moduleData, setModuleData] = useState<Omit<Module, 'id'>>({
     moduleName: '',
-    language: '',
-    coreBehavior: '',
+    language: 'en',
+    coreBehavior: 'Malware',
     completionTime: 0,
-    role: '',
-    tag: '',
-    programResource: '',
-    contentType: '',
+    role: 'Developers',
+    tag: 'Accessible',
+    programResource: 'Infographics',
+    contentType: 'Assessment',
     passingScore: 0,
-    category: '',
-    image: '',
-    duration: 0,
-    industry: '',
-    security: '',
+    category: 'Compliance',
+    coverImage: '',
+    duration: 'Under 2 Minutes',
+    industry: 'Retail',
+    security: 'Critical',
     slides: [],
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newValue =
-      name === 'passingScore' || name === 'duration' || name === 'completionTime'
+      name === 'passingScore' || name === 'completionTime'
         ? parseInt(value, 10) || 0
         : value;
     setModuleData({ ...moduleData, [name]: newValue });
@@ -396,9 +148,9 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const { moduleName, passingScore, image, slides } = moduleData;
+    const { moduleName, passingScore, coverImage, slides } = moduleData;
 
-    if (!moduleName || !image || !passingScore) {
+    if (!moduleName || !coverImage || !passingScore) {
       alert('Please fill all required fields.');
       return;
     }
@@ -484,7 +236,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                   Training Information
                 </h2>
                 <p className="text-gray-600">
-                  Enter the basic information for your training module.
+                  Enter training information and select intended target audience
                 </p>
               </div>
 
@@ -601,16 +353,19 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                       <Label htmlFor="duration" className="text-base font-medium text-gray-700">
                         Duration (minutes)
                       </Label>
-                      <Input
-                        id="duration"
-                        type="number"
-                        name="duration"
-                        value={moduleData.duration}
-                        onChange={handleChange}
-                        placeholder="0"
-                        min={0}
-                        className="w-full h-10 text-base"
-                      />
+                      <Select value={moduleData.duration} onValueChange={(value) => handleSelectChange('duration', value)}>
+                        <SelectTrigger className="w-full h-12 text-base">
+                          <SelectValue placeholder="Select Security Level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {durations.map((duration) => (
+                            <SelectItem key={duration} value={duration}>
+                              {duration}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
                     </div>
                   </div>
 
@@ -723,20 +478,36 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                     </div>
 
                     <div className="space-y-3">
-                      <Label htmlFor="image" className="text-base font-medium text-gray-700">
-                        Cover Image URL *
+                      <Label className="text-base font-medium text-gray-700">
+                        Cover Image *
                       </Label>
-                      <Input
-                        id="image"
-                        type="url"
-                        name="image"
-                        value={moduleData.image}
-                        onChange={handleChange}
-                        placeholder="https://example.com/image.jpg"
-                        className="w-full h-10 text-base"
-                        required
-                      />
+                      <Button
+                        variant="outline"
+                        type="button"
+                        onClick={() =>
+                          openModal((file) => {
+                            const updatedData = { ...moduleData, coverImage: file.url };
+                            setModuleData(updatedData);
+                          }, 'image')
+                        }
+                      >
+                        {moduleData.coverImage ? "Change Cover Image" : "Upload / Select Cover Image"}
+                      </Button>
+                      {moduleData.coverImage && (
+                        <div className="text-sm text-gray-600 mt-1">
+                          Selected:{" "}
+                          <a
+                            href={moduleData.coverImage}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                          >
+                            {moduleData.coverImage}
+                          </a>
+                        </div>
+                      )}
                     </div>
+
                   </div>
                 </div>
               </form>
@@ -820,7 +591,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                                   onChange={(data) => updateSlide(index, data)}
                                   onRemove={() => removeSlide(index)}
                                   index={index}
-                                  
+
                                 />
                               );
                             case 'image':
@@ -830,7 +601,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                                   onChange={(data) => updateSlide(index, data)}
                                   onRemove={() => removeSlide(index)}
                                   index={index}
-                                  
+
                                 />
                               );
                             case 'ppt':
@@ -840,7 +611,7 @@ const AddTrainingModule: React.FC<AddTrainingModuleProps> = ({ onClose }) => {
                                   onChange={(data) => updateSlide(index, data)}
                                   onRemove={() => removeSlide(index)}
                                   index={index}
-                                 
+
                                 />
                               );
                             default:
